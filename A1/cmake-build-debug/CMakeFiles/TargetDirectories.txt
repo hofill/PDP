@@ -1,0 +1,3 @@
+/Users/nitahoria/workspace/Facultate/PDP/A1/cmake-build-debug/CMakeFiles/A1.dir
+/Users/nitahoria/workspace/Facultate/PDP/A1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/nitahoria/workspace/Facultate/PDP/A1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
