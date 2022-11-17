@@ -13,6 +13,7 @@ typedef struct {
     int size;
     int *elements;
     pthread_mutex_t mutex;
+    pthread_cond_t cond;
 } queue_t;
 
 queue_t* initializeQueue();

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <unistd.h>
 #include "queue.h"
 
 int8_t finishedProducer = 0;
@@ -10,10 +11,15 @@ typedef struct {
     int i, j, k;
 } vector_t;
 
-void *addNumbers(void *arg) {
-    int *finalSum = (int *) arg;
-    while (!finishedProducer || queueHasElements(queue)) {
-        if (!queueHasElements(queue)) continue;
+typedef struct {
+    int length;
+    int *finalSum;
+} add_params_t;
+
+void *addNumbers(void *args) {
+    int *finalSum = ((add_params_t *) args)->finalSum;
+    int length = ((add_params_t *) args)->length;
+    for (int i = 0; i < length; i++) {
         int lastProduct = popFromQueue(queue);
         printf("adding last product %d\n", lastProduct);
         *finalSum += lastProduct;
@@ -41,7 +47,6 @@ void *multiplyNumbers(void *args) {
 
 int main() {
     queue = initializeQueue();
-    pthread_mutex_init(&queue->mutex, NULL);
     vector_t firstVector = {
             .i = 1,
             .j = 2,
@@ -57,8 +62,13 @@ int main() {
     pthread_t addNumbersThread, multiplyNumbersThread;
     int result = 0;
 
+    add_params_t addParams = {
+            .length = 3,
+            .finalSum = &result
+    };
+
     pthread_create(&multiplyNumbersThread, NULL, multiplyNumbers, &vectors);
-    pthread_create(&addNumbersThread, NULL, addNumbers, &result);
+    pthread_create(&addNumbersThread, NULL, addNumbers, &addParams);
     pthread_join(multiplyNumbersThread, NULL);
     pthread_join(addNumbersThread, NULL);
 
